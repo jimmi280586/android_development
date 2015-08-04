@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,9 +34,9 @@ public class gps2 extends Activity {
     private Button add;
     private Button remove;
     private ArrayList<Destination> list = new ArrayList<Destination>();
-    private Destination e = null;
+    private Destination e;
     private final LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-    final LocationManager lokation = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    private LocationManager lokation = null;
     float[] results = new float[1];
     double lat = 0;
     double lon = 0;
@@ -44,6 +45,7 @@ public class gps2 extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gps2);
+        lokation = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         text = (TextView)findViewById(R.id.textView);
         edit = (EditText)findViewById(R.id.editText);
         edit1 = (EditText)findViewById(R.id.editText2);
@@ -87,17 +89,19 @@ public class gps2 extends Activity {
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-             if(edit.getText().equals(null))
-             {
-                 Toast.makeText(gps2.this, "no input value", Toast.LENGTH_SHORT).show();
-             }
-                else if(sellect != null)
-             {
-                 list.remove(e);
-             }
-                Destination d = new Destination(Double.parseDouble(String.valueOf(edit.getText())),Double.parseDouble(String.valueOf(edit1.getText())),edit2.getText());
+            public void onClick(View v) {
+                //if(edit.getText().equals(null))
+                //   {
+                //       Toast.makeText(gps2.this, "no input value", Toast.LENGTH_SHORT).show();
+                //   }
+                //     else if(sellect != null)
+                //   {
+                //        list.remove(e);
+                //    }
+                Log.d("name", edit2.getText().toString());
+                Log.d("name", edit1.getText().toString());
+                Log.d("name", edit.getText().toString());
+                Destination d = new Destination(Double.parseDouble(String.valueOf(edit.getText())), Double.parseDouble(String.valueOf(edit1.getText())), edit2.getText().toString());
                 list.add(d);
                 list_update();
             }
@@ -106,11 +110,17 @@ public class gps2 extends Activity {
         remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (edit.getText().equals(null)) {
-                    Toast.makeText(gps2.this, "no input value", Toast.LENGTH_SHORT).show();
+
+                Destination d = new Destination(Double.parseDouble(String.valueOf(edit.getText())), Double.parseDouble(String.valueOf(edit1.getText())), edit2.getText().toString());
+
+                for (int i = 0; i<list.size();i++)
+                {
+                    if((list.get(i).getName().equals(d.getName())) && (list.get(i).getLatitude() == d.getLatitude()) && (list.get(i).getLongitude() == d.getLongitude()))
+                    {
+                        list.remove(i);
+                    }
                 }
-                Destination d = new Destination(Double.parseDouble(String.valueOf(edit.getText())), Double.parseDouble(String.valueOf(edit1.getText())), edit2.getText());
-                list.remove(d);
+
                 list_update();
             }
         });
